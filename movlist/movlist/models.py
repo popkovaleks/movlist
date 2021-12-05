@@ -17,9 +17,17 @@ class Movie(models.Model):
         null=True
     )
 
-    watched = models.BooleanField(
+    is_watched = models.BooleanField(
         default=False
     )
 
     def __str__(self):
         return self.name
+
+    def create(self, name, director=None, year=None, is_watched=False):
+        self.objects.create(
+            name=name,
+            director=director,
+            year=year,
+            is_watched=is_watched
+        )

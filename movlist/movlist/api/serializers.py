@@ -13,7 +13,7 @@ class MoviesSerializer(serializers.Serializer):
         required = False
     )
 
-    wathched = serializers.BooleanField(
+    is_wathched = serializers.BooleanField(
         default=False,
         required=False
     )
