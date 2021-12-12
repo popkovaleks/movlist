@@ -6,14 +6,17 @@ class MoviesSerializer(serializers.Serializer):
     )
 
     director = serializers.CharField(
-        required = False
+        required = False,
+        default=None
     )
 
     year = serializers.IntegerField(
-        required = False
+        required = False,
+        default=None,
+        allow_null=True
     )
 
-    is_wathched = serializers.BooleanField(
+    is_watched = serializers.BooleanField(
         default=False,
         required=False
     )

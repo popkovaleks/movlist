@@ -14,7 +14,8 @@ class Movie(models.Model):
     )
 
     year = models.IntegerField(
-        null=True
+        null=True,
+        blank=True
     )
 
     is_watched = models.BooleanField(
