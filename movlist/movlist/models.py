@@ -32,3 +32,9 @@ class Movie(models.Model):
             year=year,
             is_watched=is_watched
         )
+
+    def check_watched(id):
+        Movie.objects.filter(id=id).update(is_watched=True)
+    
+    def uncheck_watched(id):
+        Movie.objects.filter(id=id).update(is_watched=False)

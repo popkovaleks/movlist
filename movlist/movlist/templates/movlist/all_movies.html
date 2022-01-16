@@ -1,0 +1,52 @@
+{% load render_table from django_tables2 %}
+<!doctype html>
+<html>
+    <head>
+        <title>Movie List</title>
+        <linkrel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    </head>
+    <body>
+        {% if movie_list %} 
+            <table>
+                <tr>
+                    <th>Название</th>
+                    <th>Режиссер</th>
+                    <th>Просмотрено</th>
+                </tr>
+                {% for movie in movie_list %} 
+                    <tr>
+                        <td>{{ movie.name }}</td>
+                        <td>{{ movie.director }}</td>
+                        <td> 
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="checkbox" name = "{{ movie.name }}" id = "{{ movie.id }}" class="is_watched" {% if movie.is_watched %} checked {% endif %}> </td>
+                            </form>
+                            
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        {% block javascript %}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}" </script>
+            <script>
+                $(document).ready( function() {
+                    $('.is_watched').on('click', function(){
+                        movie_id = $(this).attr('id');
+                        data = {
+                                id: movie_id,
+                                is_watched: $(this).is(':checked'),
+                                csrfmiddlewaretoken: "{{ csrf_token }}"
+                            }
+                        $.ajax({ type: "POST",
+                                    url: '{% url "change_status" %}',
+                                    data: data,
+                                    
+                    })
+                })})
+            </script>
+        {% endblock javascript %}
+    </body>
+</html>

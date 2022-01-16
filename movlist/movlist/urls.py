@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from movlist.views import change_status
+
+from movlist.views import MovieListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('movlist.api.urls'))
+    path('api/', include('movlist.api.urls')),
+    path('', MovieListView.as_view()),
+    path('change_status/', change_status, name="change_status")
 ]
