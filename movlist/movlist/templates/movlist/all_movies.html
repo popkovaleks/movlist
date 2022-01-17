@@ -1,38 +1,164 @@
-{% load render_table from django_tables2 %}
 <!doctype html>
 <html>
     <head>
         <title>Movie List</title>
-        <linkrel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        {% load static %} 
+        <link rel="stylesheet" type="text/css" href="{% static 'movlist/style.css' %}"
     </head>
     <body>
-        {% if movie_list %} 
+        <div>
+            <button class="get_random_movie">Случайный фильм</button>
+            <div id="random_movie"></div>
+        </div>
+        <div class="tabs">
+            <button class="tablinks" id="defaultOpen" onclick="openTab(event,'all_movies')">Все фильмы</button>
+            <button class="tablinks" onclick="openTab(event,'not_watched_movies')">Непросмотренные фильмы</button>
+            <button class="tablinks" onclick="openTab(event,'watched_movies')">Просмотренные фильмы</button>
+        </div>
+        <div class="tabcontent" id="all_movies">
+            {% if movie_list %} 
+                <table>
+                    <tr>
+                        <th>Название</th>
+                        <th>Режиссер</th>
+                        <th>Просмотрено</th>
+                    </tr>
+                    {% for movie in movie_list %} 
+                        <tr>
+                            <td>{{ movie.name }}</td>
+                            <td>{{ movie.director }}</td>
+                            <td> 
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="checkbox" name = "{{ movie.name }}" id = "{{ movie.id }}" class="is_watched" {% if movie.is_watched %} checked {% endif %} onclick="changeStatus(this)"> </td>
+                                </form>
+                                
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+
+        <div class="tabcontent" id="not_watched_movies">
+            {% if not_watched_movies %}
             <table>
                 <tr>
                     <th>Название</th>
                     <th>Режиссер</th>
                     <th>Просмотрено</th>
                 </tr>
-                {% for movie in movie_list %} 
+                {% for movie in not_watched_movies %} 
                     <tr>
                         <td>{{ movie.name }}</td>
                         <td>{{ movie.director }}</td>
                         <td> 
                             <form method="POST">
                                 {% csrf_token %}
-                                <input type="checkbox" name = "{{ movie.name }}" id = "{{ movie.id }}" class="is_watched" {% if movie.is_watched %} checked {% endif %}> </td>
+                                <input type="checkbox" name = "{{ movie.name }}" id = "{{ movie.id }}" class="is_watched" {% if movie.is_watched %} checked {% endif %} onclick="changeStatus(this)"> </td>
                             </form>
                             
                     </tr>
                 {% endfor %}
             </table>
-        {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="tabcontent" id="watched_movies">
+            {% if watched_movies %}
+            <table>
+                <tr>
+                    <th>Название</th>
+                    <th>Режиссер</th>
+                    <th>Просмотрено</th>
+                </tr>
+                {% for movie in watched_movies %} 
+                    <tr>
+                        <td>{{ movie.name }}</td>
+                        <td>{{ movie.director }}</td>
+                        <td> 
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="checkbox" name = "{{ movie.name }}" id = "{{ movie.id }}" class="is_watched" {% if movie.is_watched %} checked {% endif %} onclick="changeStatus(this)"> </td>
+                            </form>
+                            
+                    </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
 
         {% block javascript %}
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}" </script>
             <script>
+                function openTab(evt, tabName) {
+                    tabcontent = document.getElementsByClassName("tabcontent");
+                    for(i=0; i<tabcontent.length; i++){
+                        tabcontent[i].style.display = "none";
+                    }
+                    
+                    tablinks = document.getElementsByClassName("tablinks");
+                    for(i=0; i<tablinks.length; i++){
+                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                    }
+                    document.getElementById(tabName).style.display = "block";
+                    evt.currentTarget.className += " active";
+                }
+
+                document.getElementById("defaultOpen").click();
+            </script>
+            <script>
                 $(document).ready( function() {
+                    $('.get_random_movie').on('click', function() {
+                        $.ajax({
+                            type: "GET",
+                            url: '{% url "get_random_movie" %}',
+                            dataType: "json",
+                            success: function (response) {
+                                randomMovie = document.getElementById("random_movie");
+                                randomMovie.innerHTML = `<table>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Режиссер</th>
+                                        <th>Просмотрено</th>
+                                    </tr>
+                                        <tr>
+                                            <td>`+ response.name +`</td>
+                                            <td>`+ response.director +`</td>
+                                            <td> 
+                                                <form method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="checkbox" name = "` + response.name + `" id = "` + response.id + `" class="is_watched" onclick="changeStatus(this)"> </td>
+                                                </form>
+                                                
+                                        </tr>
+                                </table>`
+                            }
+                        })
+                    })
+                })
+            </script>
+            <script>
+                function changeStatus(elem){
+                    data = {
+                        id: elem.getAttribute('id'),
+                        is_watched: elem.checked,
+                        csrfmiddlewaretoken: "{{ csrf_token }}"
+                    }
+                $.ajax({ type: "POST",
+                            url: '{% url "change_status" %}',
+                            data: data,
+                            success: function() {
+                                
+                                $('#all_movies').load(" #all_movies > *");
+                                $('#watched_movies').load(" #watched_movies > *");
+                                $('#not_watched_movies').load(" #not_watched_movies > *");
+                            }
+                            
+            })
+                }
+                {% comment %} $(document).ready( function() {
                     $('.is_watched').on('click', function(){
                         movie_id = $(this).attr('id');
                         data = {
@@ -43,10 +169,20 @@
                         $.ajax({ type: "POST",
                                     url: '{% url "change_status" %}',
                                     data: data,
+                                    success: function() {
+                                        $('#all_movies').load(" #all_movies > *");
+                                        $('#watched_movies').load(" #watched_movies > *");
+                                        $('#not_watched_movies').load(" #not_watched_movies > *");
+
+                                    }
                                     
                     })
-                })})
+                })}) {% endcomment %}
+                {% comment %} $(document).ready( function() {
+                    $('.is_watched').on('click', () => changeStatus(this));
+                }) {% endcomment %}
             </script>
+     
         {% endblock javascript %}
     </body>
 </html>

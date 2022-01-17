@@ -1,0 +1,7 @@
+body {
+    background: radial-gradient(white, silver) fixed;
+}
+
+.tabcontent {
+    display: none;
+}
