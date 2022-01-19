@@ -1,7 +1,115 @@
 body {
-    background: radial-gradient(white, silver) fixed;
+    background: url('../img/background.jpg') 50% 0 fixed no-repeat;
+    background-size: 100%;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 2em;
+    color: rgb(93, 95, 95);
 }
 
 .tabcontent {
     display: none;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    float: left;
+}
+
+#random_movie {
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    float: left;
+}
+
+#random_movie table {
+    width: 90%;
+    margin-left: 5%;
+}
+
+div #wrap {
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+}
+
+div .get_random_movie {
+    display: block;
+    box-sizing: border-box;
+    margin: 0 auto;
+    margin-left: 5%;
+    margin-top: 2%;
+    padding: 10px;
+    width: 90%;
+    background-color: rgba(192, 192, 192, 0.7);
+    border: 1px solid black;
+    float: left;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 2em;
+    color: rgb(93, 95, 95);
+}
+
+div .get_random_movie:hover {
+    background-color: rgba(192, 192, 192, 1);
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+div .tabs {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 5%;
+    float: left;
+}
+
+div .tablinks {
+    height: 100%;
+    width: 33%;
+    float: left;
+    display: block;
+    box-sizing: border-box;
+    margin: 0 auto;
+    margin-left: 2px;
+    padding:10px;
+    background-color: rgba(192, 192, 192, 0.5);
+    border: 1px solid black;
+}
+
+div .tablinks:hover {
+    background-color: rgba(192, 192, 192, 1);
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+button.delete{
+    font-size: 0.7em;
+    background-color: crimson;
+    color: rgb(209, 206, 206);
+    border-radius: 20px;
+    border: none;
+}
+
+table {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 5%;
+}
+
+tr {
+    border-bottom: 1px solid rgb(185, 183, 183);
+    background-color: rgba(214, 210, 210, 0.5);
+}
+
+tr:hover {
+    background-color: rgba(156, 112, 112, 0.5);
+}
+
+th {
+    text-align: center;
+    border-bottom: 1px solid rgb(185, 183, 183);
+    background-color: rgba(192, 192, 192, 0.5);
+}
+
+
+td {
+    padding: 3px;
 }
